@@ -3,6 +3,7 @@ package jackyoustra.economyplugin;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,14 +27,14 @@ public class BondInvestCommandExecutor implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command fcommand,
 			String label, String[] args) {
-		final Map<Player, Double> moneyTable = Main.moneyTable;
+		final Map<UUID, Double> moneyTable = Main.moneyTable;
 		if (sender instanceof Player) {
 			final Player player = (Player) sender;
 			if (argLengthCheck(sender, args, 3)) {
 				String index = args[1];
 				String type = args[2];
 				final double amount = Double.parseDouble(args[0]);
-				if (moneyTable.get(player) < amount) {
+				if (moneyTable.get(player.getUniqueId()) < amount) {
 					sender.sendMessage("not enough money to complete transaction");
 					return false;
 				}
@@ -83,14 +84,14 @@ public class BondInvestCommandExecutor implements CommandExecutor {
 																// inside inner
 																// loop
 
-				moneyTable.put(player, moneyTable.get(player) - amount); // withdrawal
+				moneyTable.put(player.getUniqueId(), moneyTable.get(player.getUniqueId()) - amount); // withdrawal
 				DisplayManager.updateBank(player);
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 
 					@Override
 					public void run() { // at end of time, runs
-						moneyTable.put(player, amount + amount
+						moneyTable.put(player.getUniqueId(), amount + amount
 								* (innerInterestRate / 100));
 						DisplayManager.updateBank(player);
 						player.sendMessage("repaid");

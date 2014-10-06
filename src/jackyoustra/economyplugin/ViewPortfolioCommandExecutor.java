@@ -17,7 +17,7 @@ public class ViewPortfolioCommandExecutor implements CommandExecutor {
 			return false;
 		}
 		Player player = (Player)sender;
-		Map<String, Integer> folio = StockManager.stockPortfolio.get(player); // rets individual stock portfolio
+		Map<String, Integer> folio = StockManager.stockPortfolio.get(player.getUniqueId()); // rets individual stock portfolio
 		String[] keys = folio.keySet().toArray(new String[0]);
 		Integer[] values = folio.values().toArray(new Integer[0]);
 		

@@ -13,7 +13,7 @@ public class BalanceCommandExecutor implements CommandExecutor {
 			String[] arg3) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			player.sendMessage("CONSOLE: You have $" + Main.moneyTable.get(player) + ChatColor.GRAY);
+			player.sendMessage("CONSOLE: You have $" + Main.moneyTable.get(player.getUniqueId()) + ChatColor.GRAY);
 			return true;
 		}
 		else{

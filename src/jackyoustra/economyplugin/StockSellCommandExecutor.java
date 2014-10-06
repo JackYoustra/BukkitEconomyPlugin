@@ -25,6 +25,9 @@ public class StockSellCommandExecutor implements CommandExecutor {
 		}catch(InputMismatchException e){
 			player.sendMessage("Invalid amount input");
 			return false;
+		}catch (NumberFormatException e) {
+			player.sendMessage("Error: misplaced ticker symbol");
+			return false;
 		}
 		try {
 			StockManager.sellStockForPlayer(player, args[1], amount);
@@ -33,7 +36,7 @@ public class StockSellCommandExecutor implements CommandExecutor {
 				player.sendMessage("Ticker not owned");
 			}
 			if(e.isInsufficientCurrency()){
-				player.sendMessage("Insufficient Currency");
+				player.sendMessage("You do not have that many stocks to sell!");
 			}
 			return false;
 		}

@@ -1,6 +1,7 @@
 package jackyoustra.economyplugin;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -17,6 +18,12 @@ public class DisplayManager {
 	static ScoreboardManager manager = Bukkit.getScoreboardManager();
 	static Map<Player, Scoreboard> scoreboards = new ConcurrentHashMap<Player, Scoreboard>();
 
+	public static void createScoreboards(Player[] players){
+		for(Player p : players){
+			createScoreboard(p);
+		}
+	}
+	
 	public static void createScoreboard(Player player) {
 
 		Scoreboard board = manager.getNewScoreboard();
@@ -27,7 +34,7 @@ public class DisplayManager {
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName("Account");
 
-		money.setScore(0);
+		money.setScore(Main.moneyTable.get(player.getUniqueId()).intValue());
 
 		player.setScoreboard(board);
 		scoreboards.put(player, board);
@@ -48,7 +55,7 @@ public class DisplayManager {
 	}
 
 	public static void updateBank(Player target) {
-		Map<Player, Double> moneyTable = Main.moneyTable;
-		setBank(target, moneyTable.get(target).intValue());
+		Map<UUID, Double> moneyTable = Main.moneyTable;
+		setBank(target, moneyTable.get(target.getUniqueId()).intValue());
 	}
 }

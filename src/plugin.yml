@@ -26,6 +26,12 @@ commands:
   balance:
     description: See your current monetary balance
     usage: /<command>
+  viewMaterialCost:
+    description: View the cost of a certain material
+    usage: /<command>
+  sellItemInHand:
+    description: Sell the item that you're currently holding
+    usage: /<command>
 permissions:
   trader:
     description: You have the ability to trade, can be taken away by SEC

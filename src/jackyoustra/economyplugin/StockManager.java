@@ -7,15 +7,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
 
 public class StockManager {
-	public static ConcurrentHashMap<Player, ConcurrentHashMap<String, Integer>> stockPortfolio = new ConcurrentHashMap<>(); // player to number of stocks
+	public static ConcurrentHashMap<UUID, ConcurrentHashMap<String, Integer>> stockPortfolio = new ConcurrentHashMap<>(); // player to number of stocks
+	public static final String stockPortfolioPath = "ubiquitousstockportfolio.bin";
 	
 	public static void buyStock(Player buyer, int amount, String ticker) throws StockTransactionException{ 
-		double money = Main.moneyTable.get(buyer);
+		double money = Main.moneyTable.get(buyer.getUniqueId());
 		double price;
 		try {
 			price = getStockPrice(ticker);
@@ -30,9 +32,9 @@ public class StockManager {
 		
 		money-=price;
 		
-		Main.moneyTable.put(buyer, money);
+		Main.moneyTable.put(buyer.getUniqueId(), money);
 		// get stocks
-		Map<String, Integer> personalPortfolio = stockPortfolio.get(buyer);
+		Map<String, Integer> personalPortfolio = stockPortfolio.get(buyer.getUniqueId());
 		int numberOfStocks = amount;
 		if(mapContainsStringKey(personalPortfolio, ticker)){
 			numberOfStocks += personalPortfolio.get(ticker);
@@ -48,31 +50,30 @@ public class StockManager {
 	}
 	
 	public static void initializePortfolio(Player player){
-		if(!stockPortfolio.containsKey(player)){
-			stockPortfolio.put(player, new ConcurrentHashMap<String, Integer>());
+		if(!stockPortfolio.containsKey(player.getUniqueId())){
+			stockPortfolio.put(player.getUniqueId(), new ConcurrentHashMap<String, Integer>());
 		}
 	}
 	
 	public static void addStockForPlayer(Player player, String stock, int amount){
-		Map<String, Integer> individualPortfolio = stockPortfolio.get(player);
+		Map<String, Integer> individualPortfolio = stockPortfolio.get(player.getUniqueId());
 		individualPortfolio.put(stock, individualPortfolio.get(stock)+amount);
 	}
 	
 	public static void sellStockForPlayer(Player player, String stock, int amount) throws StockTransactionException{ // return false if failed (would be negative, not found, etc)
-		Map<String, Integer> individualPortfolio = stockPortfolio.get(player);
+		Map<String, Integer> individualPortfolio = stockPortfolio.get(player.getUniqueId());
 		String[] keys = individualPortfolio.keySet().toArray(new String[0]);
 		int currentLocation;
 		for(currentLocation = 0; currentLocation < keys.length; currentLocation++){
 			String currentKey = keys[currentLocation];
 			if(currentKey.equalsIgnoreCase(stock)){
 				// can do work
-				Integer currentTotal = individualPortfolio.values().toArray(new Integer[0])[currentLocation];
+				Integer currentTotal = individualPortfolio.get(currentKey);
 				if(currentTotal - amount < 0){
 					throw new StockTransactionException(true, false);
 				}
 				// guarunteed to work
 				currentTotal-=amount;
-				individualPortfolio.values().toArray()[currentLocation] = amount; // reset number of holdings
 				
 				// update money in bank
 				double capitalGain;
@@ -81,8 +82,13 @@ public class StockManager {
 				} catch (Exception e) {
 					throw new StockTransactionException(false, true);
 				}
-				
-				Main.moneyTable.put(player, Main.moneyTable.get(player)+capitalGain);
+				if(currentTotal != 0){
+					individualPortfolio.put(currentKey, currentTotal); // reset number of holdings
+				}
+				else{
+					individualPortfolio.remove(currentKey);
+				}
+				Main.moneyTable.put(player.getUniqueId(), Main.moneyTable.get(player.getUniqueId())+capitalGain);
 				DisplayManager.updateBank(player);
 				return;
 			}

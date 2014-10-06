@@ -1,6 +1,7 @@
 package jackyoustra.economyplugin;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,11 +14,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class LoginListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onJoin(PlayerJoinEvent event){
-		Map<Player, Double> mt = Main.moneyTable;
+		Map<UUID, Double> mt = Main.moneyTable;
 		Player cPlayer = event.getPlayer();
 		DisplayManager.createScoreboard(cPlayer);
-		if(!mt.containsKey(cPlayer)){
-			mt.put(cPlayer, 5000.0); // Starting cash value
+		if(!mt.containsKey(cPlayer.getUniqueId())){
+			mt.put(cPlayer.getUniqueId(), 5000.0); // Starting cash value
 			cPlayer.sendMessage("CONSOLE: Welcome to my server. You start with $5k to invest or spend. Use it wisely!" + ChatColor.GRAY);
 		}
 		else{
