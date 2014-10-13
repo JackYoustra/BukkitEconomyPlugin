@@ -1,0 +1,38 @@
+name: EconomyPlugin
+main: jackyoustra.economyplugin.Main
+version: 1.0
+
+commands:
+  investBond:
+    description: Invest in a bond (ust 2m, gb 6hr, etc)
+    usage: /<command> [amount] [bond]
+    permission: <plugin name>.trader
+    permission-message: You are not a trader
+  investStock:
+    description: Invest in a stock
+    usage: /<command> [amount] [ticker]
+    permission: <plugin name>.trader
+    permission-message: You are not a trader
+  sellStock:
+    description: Sell an investment
+    usage: /<command> [amount] [ticker]
+    permission: <plugin name>.trader
+    permission-message: You are not a trader
+  viewPortfolio:
+    description: View your investment portfolio
+    usage: /<command> [amount] [ticker]
+    permission: <plugin name>.trader
+    permission-message: You are not a trader
+  balance:
+    description: See your current monetary balance
+    usage: /<command>
+  viewMaterialCost:
+    description: View the cost of a certain material
+    usage: /<command>
+  sellItemInHand:
+    description: Sell the item that you're currently holding
+    usage: /<command>
+permissions:
+  trader:
+    description: You have the ability to trade, can be taken away by SEC
+    default: true
