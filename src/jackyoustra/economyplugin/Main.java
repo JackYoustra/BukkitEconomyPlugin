@@ -56,7 +56,7 @@ public class Main extends JavaPlugin{
 			e.printStackTrace();
 		}
 		if(marketValueTable.isEmpty()){
-			initSeedTable();
+			simpleInitSeedTable();
 		}
 	}
 	
@@ -86,7 +86,13 @@ public class Main extends JavaPlugin{
 		getCommand("sellItemInHand").setExecutor(new SellItemInHandCommandExecutor());
 	}
 	
-	private void initSeedTable() {
+	private void simpleInitSeedTable(){
+		for(Material mat : Material.values()){
+			marketValueTable.put(mat, 100.0);
+		}
+	}
+	
+	private void complexInitSeedTable() {
 		long totalMaterials = 0;
 		for(Material mat : Material.values()){
 			marketValueTable.put(mat, 100.0);
@@ -121,43 +127,6 @@ public class Main extends JavaPlugin{
 		for(Material mat : Material.values()){
 			marketValueTable.put(mat, totalMaterials/marketValueTable.get(mat));
 		}
-	}
-	// obselete
-	protected void oldInitSeedTable(){/*
-		final Calendar calendarInstance = Calendar.getInstance();
-		long time = calendarInstance.getTimeInMillis()*-1;
-		marketValueTable = new ConcurrentHashMap<>();
-		List<World> loadedWorlds = getServer().getWorlds();
-		for(World currentWorld : loadedWorlds){
-			Chunk[] loadedChunks = currentWorld.getLoadedChunks();
-			for(Chunk currentChunk : loadedChunks){
-				final int currentChunkX = currentChunk.getX();
-				final int currentChunkY = 0;
-				final int currentChunkZ = currentChunk.getZ();
-				
-				for(int x = currentChunkX; x < currentChunkX+16; x++){
-					for(int y = currentChunkY; y < currentChunkY+128; y++){
-						for(int z = currentChunkZ; z < currentChunkZ + 16; z++){
-							Block currentBlock = currentWorld.getBlockAt(currentChunkX, currentChunkY, currentChunkZ);
-							Material blockMaterial = currentBlock.getType();
-							Double tnum = marketValueTable.get(blockMaterial);
-							if(tnum == null) tnum = 0.0;
-							marketValueTable.put(blockMaterial, tnum + 1);
-							if(blockMaterial != Material.AIR){
-								blocks++;
-							}
-						}
-					}
-				}
-			}
-		}
-		time += calendarInstance.getTimeInMillis();
-		getServer().getConsoleSender().sendMessage("Time to seed: " + time + "\n Number of non-air blocks cleared" + blocks);
-		time = calendarInstance.getTimeInMillis()*-1;
-
-		time += calendarInstance.getTimeInMillis();
-		getServer().getConsoleSender().sendMessage("Time to get rarity values " + time);
-		*/
 	}
 		
 	private void initListeners(){
